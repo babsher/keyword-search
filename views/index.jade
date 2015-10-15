@@ -3,3 +3,7 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+  p Input your question:
+  form(action='/api/query', method='post')
+    input(type='text', name='query')
+    input(type='submit', value='Ask')
