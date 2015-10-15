@@ -8,9 +8,9 @@ router.get('/insert', function (req, res, next) {
 });
 
 router.post('/query', function (req, res, next) {
+  var query = req.body.query;
   mongo.getStopWords(function (stopwords) {
-    var keywords = req.body.query
-      .toLocaleLowerCase()
+    var keywords = query.toLocaleLowerCase()
       .split(/\s+/)
       .map(function (s) {
         return s.replace(/\W/, '');
@@ -24,7 +24,11 @@ router.post('/query', function (req, res, next) {
     });
     console.log('found keywords ', keywords);
     mongo.findQuery(keywords, function(r) {
-      res.json(r);
+      res.json({
+        input: query,
+        inputKeywords: keywords,
+        results: r
+      });
     });
   });
 });
