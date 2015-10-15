@@ -331,11 +331,24 @@ var insertStopwords = function (db) {
 };
 
 function insertQuerys(db) {
-  db.collection(query).insertOne(
+  db.collection(query).insertMany([
     {
       keywords: ['facebook', 'performing'],
       query: 'How are my Facebook ads performing?'
-    }, logErrors);
+    },
+    {
+      keywords: ['instagram', 'performing'],
+      query: 'How are my Instagram ads performing?'
+    },
+    {
+      keywords: ['blue', 'sky'],
+      query: 'Why is the sky blue?'
+    },
+    {
+      keywords: ['life', 'universe', '42'],
+      query: 'What is the answer to the Ultimate Question of Life, The Universe, and Everything?'
+    }
+  ], logErrors);
 }
 
 function logErrors(err) {
@@ -368,12 +381,11 @@ function resultsHandler(length, callback) {
   var count = 0;
   var results = {};
   return function (err, r, word) {
-    count += 1;
     if (err) {
       console.log(err);
     } else {
       r.forEach(function (q) {
-        if(!results.hasOwnProperty(q._id)) {
+        if (!results.hasOwnProperty(q._id)) {
           results[q._id] = {
             query: q.query,
             rank: 0,
@@ -384,13 +396,14 @@ function resultsHandler(length, callback) {
         results[q._id].matchKeywords.push(word);
       });
 
+      count += 1;
       // if we are done collect results
-      if(count >= length) {
-        var resultsArr = Object.keys(results).map(function(id) {
+      if (count >= length) {
+        var resultsArr = Object.keys(results).map(function (id) {
           return results[id];
         });
         console.log('results array', resultsArr);
-        resultsArr.sort(function(a, b) {
+        resultsArr.sort(function (a, b) {
           return a.rank - b.rank;
         });
         callback(resultsArr);
@@ -404,7 +417,7 @@ module.exports.findQuery = function (keywords, callback) {
     var handler = resultsHandler(keywords.length, callback);
     keywords.forEach(function (word) {
       console.log('Checking word ', word);
-      db.collection(query).find({'keywords': word}).toArray(function(err, r) {
+      db.collection(query).find({'keywords': word}).toArray(function (err, r) {
         handler(err, r, word);
       });
     });
