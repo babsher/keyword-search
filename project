@@ -1,0 +1,24 @@
+Create a keyword matcher
+
+MetricStory needs a way for customers to put in natural language sentences and take the keywords from the
+sentence and match / rank it against sentences with keywords in the MetricStory database. The output
+should be an array of JSON objects sorted by rank.
+
+Example
+
+Input
+'How are my Facebook marketing campaigns performing?'
+
+Keywords Extracted
+['facebook', 'marketing', 'campaigns', 'performing']
+
+DB Match: How are my Facebook ads performing?  [‘facebook‘, ‘performing’]
+
+Output
+{
+input: ‘How are my Facebook marketing campaigns performing?’,
+inputKeywords: ['facebook', 'marketing', 'campaigns', 'performing'],
+matchedKeywords: [‘facebook’, ‘performing’],
+rank: 2,
+output: ‘How are my Facebook ads performing?’’
+}
